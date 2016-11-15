@@ -23,11 +23,14 @@
  */
 package programmer;
 
-import java.io.FileNotFoundException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import jssc.SerialPort;
-import jssc.SerialPortException;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.websocket.server.WebSocketHandler;
+import org.eclipse.jetty.websocket.servlet.WebSocketServletFactory;
+import java.util.Properties;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
 
 /**
  *
@@ -37,15 +40,48 @@ public class Test
 {
    Avr avr;
    Serial serial;
-   public Test(Avr av,Serial sp)
+   public Test()
    {
-       this.avr=av;
-       this.serial=sp;
    }
-    public void runtest() throws FileNotFoundException, SerialPortException
+    public void runtest() throws InterruptedException, Exception
     {
-       Hex hex = new Hex();
-       hex.BytesFromHex(" ");
-       avr.BurnFlash(hex.getdata(), hex.getbytecount(), hex.getaddress());      
+       Server server = new Server(9090);
+        WebSocketHandler wsHandler = new WebSocketHandler() {
+            @Override
+            public void configure(WebSocketServletFactory factory) {
+                factory.register(MyWebSocketHandler.class);
+            }
+        };
+        server.setHandler(wsHandler);
+        server.start();
+        server.join();     
     }
+  /* public void runtest()
+   {
+       Properties prop = new Properties();
+	InputStream input = null;
+        try {
+
+		input = new FileInputStream("conf/config.properties");
+
+		// load a properties file
+		prop.load(input);
+
+		// get the property value and print it out
+		System.out.println(prop.getProperty("database"));
+		System.out.println(prop.getProperty("dbuser"));
+		System.out.println(prop.getProperty("dbpassword"));
+
+	} catch (IOException ex) {
+		ex.printStackTrace();
+	} finally {
+		if (input != null) {
+			try {
+				input.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+   }*/
 }

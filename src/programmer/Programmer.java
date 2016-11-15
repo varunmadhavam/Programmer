@@ -34,7 +34,7 @@ import jssc.*;
  */
 public class Programmer
 {
-    public static void main(String[] args) throws InterruptedException, SerialPortException, FileNotFoundException
+    /*public static void main(String[] args) throws InterruptedException, SerialPortException, FileNotFoundException
     {    
         SerialPort serialPort = new SerialPort("/dev/ttyACM0");
         BlockingQueue<Message> queue = new ArrayBlockingQueue<>(100);
@@ -49,7 +49,13 @@ public class Programmer
         //test.runtest();
         latch.await();
         serialPort.removeEventListener();        
-    }    
+    }  */  
+    
+    public static void main(String[] args) throws FileNotFoundException, Exception
+    {
+        Test test = new Test();
+        test.runtest();
+    }
          
 }
 
