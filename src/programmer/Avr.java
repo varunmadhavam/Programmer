@@ -65,7 +65,6 @@ public class Avr
         this.twd_eeprom=twdee;
         this.twd_erase=twder;
         this.serialPort=serial;
-        //this.support=new Support();
         
     }
     
@@ -75,16 +74,10 @@ public class Avr
         
     }      
     
-    public void enter_programming() throws SerialPortException
-    {
-        System.out.println("enter_programming() :- Enter Programming.");
-        serialPort.writeInt(0x91);
-    }
-    
     public void enable_programming() throws SerialPortException
     {
-          serialPort.writeIntArray(new int[]{0xAC,0x53,0x00,0x00});
-       
+        System.out.println("enable_programming() :- Enabling Programming.");
+        serialPort.writeInt(0x91);     
     }
     
     public void leave_programming() throws SerialPortException
@@ -93,39 +86,30 @@ public class Avr
         serialPort.writeInt(0x92);
     }
     
-    public void toggle_reset() throws SerialPortException
-    {
-        System.out.println("toggle_reset() :- Toggling reset.");
-        serialPort.writeInt(0x93);
-    }
-    public void chip_erase() throws SerialPortException
-    {
-        System.out.println("chip_erase() :- Strating Chip Erase Cycle.");
-        serialPort.writeIntArray(new int[]{0xAC,0x80,0x00,0x00});
-    }
-    
     public void read_signature() throws SerialPortException
     {
         System.out.println("read_signature() :- Strating Chip Signature Read.");
-        serialPort.writeIntArray(new int[]{0x30,0x00,0x00,0x00,0x30,0x00,0x01,0x00,0x30,0x00,0x02,0x00});
+        serialPort.writeInt(0x93);
+    }
+  
+    public void chip_erase() throws SerialPortException
+    {
+        System.out.println("chip_erase() :- Strating Chip Erase Cycle.");
+        serialPort.writeInt(0x94);
     }
     
-    public void read_fuse_low() throws SerialPortException
+    
+    public void read_fuse() throws SerialPortException
     {
-        System.out.println("read_fuse_low() :- Read fuse low byte.");
-        serialPort.writeIntArray(new int[]{0x50,0x00,0x00,0x00});
+        System.out.println("read_fuse() :- Read fuse bytes.");
+        serialPort.writeInt(0x95);
     }
     
-    public void read_fuse_high() throws SerialPortException
-    {
-        System.out.println("read_fuse_high() :- Read fuse high byte.");
-        serialPort.writeIntArray(new int[]{0x58,0x08,0x00,0x00});
-    }
     
     public void read_lock() throws SerialPortException
     {
         System.out.println("read_lock() :- Read Lock byte.");
-        serialPort.writeIntArray(new int[]{0x58,0x00,0x00,0x00});
+        serialPort.writeInt(0x96);
     }
     
     public void load_memory_page(byte address,byte low,byte high) throws SerialPortException
