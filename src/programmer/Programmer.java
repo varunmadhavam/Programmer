@@ -41,7 +41,7 @@ public class Programmer
         CountDownLatch latch = new CountDownLatch(1);
         Avr avr= new Avr("Atmega8",new byte[]{(byte)0x1E,(byte)0x93,(byte)0x07},32,4,4096,512,10,10,10,10,serialPort);
         Hex hex = new Hex();
-        hex.BytesFromHex("");
+        hex.BytesFromHexFile("");
         int mode=0;
         Thread x = new Thread(new Serial(serialPort,queue,latch,avr,hex));
         x.start();
@@ -49,13 +49,13 @@ public class Programmer
         //test.runtest();
         latch.await();
         serialPort.removeEventListener();        
-    }  */  
+    }*/
     
     public static void main(String[] args) throws FileNotFoundException, Exception
     {
         Test test = new Test();
         test.runtest();
     }
-         
+
 }
 

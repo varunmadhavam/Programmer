@@ -90,7 +90,7 @@ public class Fsm implements Runnable
                                     {
                                       try {
                                             sp.sleep(3000);
-                                            avr.enter_programming();
+                                            //avr.enter_programming();
                                             d=readdata();
                                             if(d[3]!=(byte)0x91)
                                                 break;
@@ -103,7 +103,7 @@ public class Fsm implements Runnable
                                             d=readdata();
                                             if(d[3]!=(byte)0x08)
                                                 break;
-                                            avr.toggle_reset();
+                                            //avr.toggle_reset();
                                             d=readdata();
                                             if(d[3]!=(byte)0x93)
                                                 break;
@@ -111,7 +111,7 @@ public class Fsm implements Runnable
                                             d=readdata();
                                             if(d[3]!=(byte)0x92)
                                                 break;
-                                            avr.enter_programming();
+                                            //avr.enter_programming();
                                             d=readdata();
                                             if(d[3]!=(byte)0x91)
                                                 break;

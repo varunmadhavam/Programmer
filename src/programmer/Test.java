@@ -30,7 +30,7 @@ import java.util.Properties;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-
+import jssc.SerialPortList;
 
 /**
  *
@@ -38,7 +38,7 @@ import java.io.InputStream;
  */
 public class Test
 {
-   Avr avr;
+   /*Avr avr;
    Serial serial;
    public Test()
    {
@@ -55,7 +55,7 @@ public class Test
         server.setHandler(wsHandler);
         server.start();
         server.join();     
-    }
+    }*/
   /* public void runtest()
    {
        Properties prop = new Properties();
@@ -84,4 +84,13 @@ public class Test
 		}
 	}
    }*/
+
+
+    public Test()
+    {
+    }
+    public void runtest() throws InterruptedException, Exception {
+        Hex hex = new Hex();
+        hex.BytesFromHexFile("");
+    }
 }

@@ -28,71 +28,103 @@ import java.io.FileNotFoundException;
 import java.util.Arrays;
 import java.util.Scanner;
 
+import static java.lang.System.exit;
+
 /**
  *
  * @author varun
  */
 public class Hex 
 {
-    short start_address=0xFF;
-    byte[] data;
-    int bytecount;
-    Support sp = new Support();
+    short   start_address;
+    byte[]  data;
+    int     bytecount;
+    Support sp;
+
+    public  Hex()
+    {
+        start_address       =   0xFF;
+        sp                  =   new Support();
+    }
     
-    public void BytesFromHex(String file) throws FileNotFoundException
+    public void BytesFromHexFile(String file) throws FileNotFoundException
     {
         Scanner scan;
-        scan = new Scanner(new File("/home/varun/blinkhex/blink.hex"));
-        int iter=0;
-        String data_hex="";
-        
-        while(scan.hasNextLine())
+        scan                =   new Scanner(new File("/home/varun/coding/c/avr/blinky/bin/blinky.hex"));
+        boolean isFirstLine =   true;
+        String  data_hex    =   ""; //stores the entire hex file bytes as a string to be loaded later.
+        int     bc          =   0;
+        byte[]  content     =   {0x00};
+        byte[]  type;
+        String  recordType;
+        String  line;
+        int     length;
+        String  startbit;
+        byte[]  count       =   {0x00};
+        byte[]  address     =   {0x00};
+        byte[]  data;
+        byte[]  crc;
+
+        while(scan.hasNextLine())//iterate over each line of the hex file.
         {
-          String line = scan.nextLine();
-          int length = line.length();
-          String startbit=line.substring(0,1);         
-          if(!":".equals(startbit))
+          line      =   scan.nextLine();
+          length    =   line.length();
+          startbit  =   line.substring(0,1);
+
+          if(!":".equals(startbit))// all lines of the hex file starts with a :
            {
-             System.out.println("Error parsing Hex file");
-             break;
+             System.out.println("Error parsing Hex file..Line not starting with a :");
+             System.exit(0);
            }
           else
            {
-             byte[] content = sp.toByteArray(line.substring(1,length));
-             byte[] type  = Arrays.copyOfRange(content,3,4);
-             int type_int  = sp.byteToInt(type,1);
-             if(type_int==1)
+
+             recordType  = line.substring(7,9);//substring [7][8] of the line which is the record type. 9 is not included in substring.
+             if(recordType.equals("01"))// end of file record type.
              {
                  //System.out.println("Reached End Of file");
-                 break;
+                 if(sp.byteToInt(address,2)==(bytecount-sp.byteToInt(count,1)))
+                 {
+                     System.out.println("Basic sanity check on hex read passed..!");
+                     break;
+                 }
+                 else
+                 {
+                     System.out.println("The basic sanity check on reading hex failed....Exiting");
+                     System.exit(1);
+                 }
+
              }
-             else if(type_int==0)
+             else if(recordType.equals("00"))
              {
-                byte[] count = Arrays.copyOfRange(content,0,1);
-                byte[] address = Arrays.copyOfRange(content,1,3);
-                byte[] data  = Arrays.copyOfRange(content,4,content.length-1);
-                byte[] crc   = Arrays.copyOfRange(content,content.length-1,content.length);
-                int bc = sp.byteToInt(count,1);
-                if(iter==0)
+                content  = sp.toByteArray(line.substring(1,length));
+                count    = Arrays.copyOfRange(content,0,1);
+                address  = Arrays.copyOfRange(content,1,3);
+                //data   = Arrays.copyOfRange(content,4,content.length-1);
+                //crc    = Arrays.copyOfRange(content,content.length-1,content.length);
+                bc       = sp.byteToInt(count,1);
+
+                if(isFirstLine)
                 {
-                 start_address=sp.byteToShort(address,2);
-                 iter=1;
+                    start_address=sp.byteToShort(address,2);
+                    isFirstLine=false;
                 }
+
                 bytecount=bytecount+bc;
                 data_hex=data_hex+line.substring(9,9+(bc*2));
-                //System.out.println(line.substring(9,9+(bc*2)));               
+                //System.out.println(line.substring(9,9+(bc*2)));
               }
              else
              {
-                 
+                System.out.println("Unhandled record type in hex file. Exiting");
+                exit(1);
              }
             }
         }
         //System.out.println(sp.bytesToHex(sp.shorttobytes(start_address)));
         //System.out.println(bytecount);
         data=sp.toByteArray(data_hex); 
-        //System.out.println(sp.bytesToHex(data));
-        //System.out.println(data.length);
+        //System.out.println(data_hex);
     }
     
     public byte[] getdata()
